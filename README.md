@@ -15,8 +15,12 @@
 ## Create Service with Nest.js CLI
     * nest g service (name of service)
 
+## For creating Partial Type for update method
+    * npm i @nestjs/mapped-types -D 
+        * -D for adding in devDependencies
+## For validation of data transfer object (DTO)
+    * npm i class-validator class-transformer 
 
-    
 --------------------------------------------------
 
 ### After git clone use for backend
