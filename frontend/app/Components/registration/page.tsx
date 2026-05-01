@@ -1,12 +1,47 @@
 "use client"
 import { useEffect, useState } from "react"
-import Data from "./data"
 
-let data = Data();
+let data = {
+	fromStyles: 
+        {
+            inputDiv: "flex justify-between border-b-black border-b-2 max-5 my-7 py-1 m-4",
+            inputs: "w-11/12 bg-transparent outline-none placeholder-black text-3xl placeholder:text-xl",
+            imgDiv: "w-2/12 flex items-center justify-center",
+            btn_submit:  "border border-blue-300 rounded-2xl cursor-pointer text-center text-lg font-bold hover:bg-blue-400 transition-all duration-600 hover:text-blue-100 hover:border-gray-800 p-3 w-2/2 ",
+			btn_sin_log: "border border-blue-300 rounded-2xl cursor-pointer text-center text-lg font-bold hover:bg-blue-400 transition-all duration-600 hover:text-blue-100 hover:border-gray-800 p-2"
+        },
+        struct: [
+                    {
+                        type: "text",
+                        name: "Username",
+                        src : "/png/iconUsers.png",
+                        value: "",
+                        bol: true,
+                    },
+                    {
+                        type: "email",
+                        name: "Email",
+                        src : "/png/iconEmail.png",
+                        value: "",
+                        bol: true,
+                    },
+                    {
+                        type: "password",
+                        name: "Password",
+                        src : "/png/iconSecret.png",
+                        value: "",
+                        bol: true,
+                    }
+                ],
+}
 function Registration() {
 
 	const [isLoginMode, setIsLoginMod] = useState(true);
 	const [labelFocus, setLabelFocus] = useState(data.struct);
+	
+	useEffect(() => {
+		setLabelFocus(labelFocus);
+	}, [])
 	
 	useEffect(() => {
 		if (isLoginMode && labelFocus.length === 4)
@@ -71,17 +106,19 @@ return (
 						<button className={data.fromStyles.btn_submit}
 							type="submit" onClick={(e) => {
 							e.preventDefault();
-							labelFocus.forEach((item) => {
-								console.log(item.value);
-							})
 							setLabelFocus((prev) => prev.map((item) => ({...item, value: "", bol: true})));
 							
 						}}> {isLoginMode ? "Login" : "Sign Up"} </button>
 					</div>
-					<div className="p-4 text-lg font-bold ">
+					<div className="p-4 text-lg font-bold flex justify-between">
 						<p>
 							{!isLoginMode ? "Already have an account? / " : "Don't have an account? / " }
-							<button type="button" onClick={() => { setIsLoginMod(!isLoginMode); }} >
+							<button  className={data.fromStyles.btn_sin_log}
+								type="button" onClick={() => { 
+								setIsLoginMod(!isLoginMode); 
+								setLabelFocus((prev) => prev.map((item) => ({...item, value: "", bol: true})));
+
+								}} >
 								{!isLoginMode ? " Login" : " Sign Up"}
 							</button>
 						</p>
