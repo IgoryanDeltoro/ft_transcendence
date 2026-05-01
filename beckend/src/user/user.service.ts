@@ -1,14 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
+import  * as bcrypt from "bcrypt"
 
 @Injectable()
 export class UserService {
 
 constructor(private readonly databaseService: DatabaseService) {}
 
-async create(createUserDto: Prisma.UserCreateInput) {
-	return this.databaseService.user.create({ data: createUserDto });
+async create(body: Prisma.UserCreateInput) {
+
+	const	hashedPassword = await bcrypt.hash(body.password, 10);
+	const	newUser = {
+		...body,
+		password: hashedPassword
+	}
+	return this.databaseService.user.create({ data: newUser });
+}
+
+async login(body: {email: string, password: string}) {
+	const user = await this.databaseService.user.findUnique({
+		where: {email: body.email}
+	})
+	if (!user)
+		throw new Error ('User not found');
+	const isMatch = await bcrypt.compare(body.password, user.password);
+	if (!isMatch)
+		throw new Error('Wrong password');
+	return user;
 }
 
 async findAll(role?: 'ADMIN' | 'PLAYER') {

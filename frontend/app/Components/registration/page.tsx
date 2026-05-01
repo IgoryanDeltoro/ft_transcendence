@@ -1,16 +1,11 @@
 "use client"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation";
+import { Fanwood_Text, Island_Moments } from "next/font/google";
+import { error } from "console";
 
 let data = {
-	fromStyles: 
-        {
-            inputDiv: "flex justify-between border-b-black border-b-2 max-5 my-7 py-1 m-4",
-            inputs: "w-11/12 bg-transparent outline-none placeholder-black text-3xl placeholder:text-xl",
-            imgDiv: "w-2/12 flex items-center justify-center",
-            btn_submit:  "border border-blue-300 rounded-2xl cursor-pointer text-center text-lg font-bold hover:bg-blue-400 transition-all duration-600 hover:text-blue-100 hover:border-gray-800 p-3 w-2/2 ",
-			btn_sin_log: "border border-blue-300 rounded-2xl cursor-pointer text-center text-lg font-bold hover:bg-blue-400 transition-all duration-600 hover:text-blue-100 hover:border-gray-800 p-2"
-        },
-        struct: [
+	 struct: [
                     {
                         type: "text",
                         name: "Username",
@@ -32,16 +27,24 @@ let data = {
                         value: "",
                         bol: true,
                     }
-                ],
+            ],
+	fromStyles: 
+        {
+            inputDiv: "flex justify-between border-b-black border-b-2 max-5 my-7 py-1 m-4",
+            inputs: " bg-transparent outline-none placeholder-black text-3xl placeholder:text-xl",
+            imgDiv: " flex items-center justify-center",
+            btn_submit:  "border border-blue-300 rounded-2xl cursor-pointer text-center text-lg font-bold hover:bg-blue-400 transition-all duration-600 hover:text-blue-100 hover:border-gray-800 p-3 w-2/2 ",
+			btn_sin_log: "border border-blue-300 rounded-2xl cursor-pointer text-center text-lg font-bold hover:bg-blue-400 transition-all duration-600 hover:text-blue-100 hover:border-gray-800 text-center p-3 py-1"
+        },
+       
 }
 function Registration() {
 
 	const [isLoginMode, setIsLoginMod] = useState(true);
 	const [labelFocus, setLabelFocus] = useState(data.struct);
-	
-	useEffect(() => {
-		setLabelFocus(labelFocus);
-	}, [])
+	const router = useRouter();
+
+	useEffect(() => { router.refresh(); }, [router])
 	
 	useEffect(() => {
 		if (isLoginMode && labelFocus.length === 4)
@@ -52,7 +55,7 @@ function Registration() {
 		{
 			setLabelFocus((prev) => [...prev, {
                         type: "password",
-                        name: "Password",
+                        name: "ConfirmPassword",
                         src : "/png/iconSecret.png",
                         value: "",
                         bol: true,
@@ -72,13 +75,40 @@ return (
 				</h2>
 			</div>
 			
-			<form action="submit" onSubmit={(e) => {
+			<form onSubmit={ async (e) => { 
 				e.preventDefault();
-				if (isLoginMode && labelFocus[labelFocus.length - 1].value != labelFocus[labelFocus.length - 2].value)
+				const form = e.currentTarget;
+				if (!isLoginMode && form.password != form.confirmPassword)
 				{
-					setLabelFocus((prev) => prev.map((item) => ({...item, value: "", bol: true})));
+					alert("Passwords do not match");
+					setLabelFocus((prev) => (
+						prev.map((item) => {
+							if (item.type === "password")
+								return {...item, value: ""}
+							else
+								return item
+						})
+					));
 					return ;
 				}
+				await fetch(isLoginMode ? "http://localhost:4000/user/login" : "http://localhost:4000/user/register", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(isLoginMode ? {
+						email: form.email.value,
+						password: form.password.value
+					} : {
+						email: form.email.value,
+						password: form.password.value,
+						name: form.text.value,
+						role: "PLAYER"
+					})
+				})
+				.then((res) => console.log(res))
+				.catch((error) => console.log(error))
+
 			}}>
 				{labelFocus.map((item, i) => {
 					if (isLoginMode && i === 0)
@@ -88,7 +118,7 @@ return (
 							
 							<label htmlFor={item.name} className="cursor-pointer">
 								<input required placeholder={item.bol ? item.name : ""}
-									type={item.type} name={item.name} id={String(i)} value={item.value} className={data.fromStyles.inputs}
+									type={item.type} name={item.type} id={String(i)} value={item.value} className={data.fromStyles.inputs}
 									onFocus={(e) => { setLabelFocus((prev) => prev.map((item, i) => i === Number(e.target.id) ? {...item, bol: false} : item)); }}
 									onChange={(e) => { setLabelFocus((prev) => prev.map((item, i) => i ===  Number(e.target.id) ? {...item, value: e.target.value} : item)); }}
 									onBlur={(e) => { setLabelFocus((prev) => prev.map((item, i) => i ===  Number(e.target.id) ? {...item, bol: true} : item)); }}
@@ -103,21 +133,17 @@ return (
 				
 				<div className="m-5 text-center">
 					<div>
-						<button className={data.fromStyles.btn_submit}
-							type="submit" onClick={(e) => {
-							e.preventDefault();
-							setLabelFocus((prev) => prev.map((item) => ({...item, value: "", bol: true})));
-							
-						}}> {isLoginMode ? "Login" : "Sign Up"} </button>
+						<button className={data.fromStyles.btn_submit} type="submit" > 
+							{isLoginMode ? "Login" : "Sign Up"}
+						</button>
 					</div>
 					<div className="p-4 text-lg font-bold flex justify-between">
 						<p>
-							{!isLoginMode ? "Already have an account? / " : "Don't have an account? / " }
+							{!isLoginMode ? "Already have an account ? / " : "Don't have an account ? / " }
 							<button  className={data.fromStyles.btn_sin_log}
 								type="button" onClick={() => { 
 								setIsLoginMod(!isLoginMode); 
 								setLabelFocus((prev) => prev.map((item) => ({...item, value: "", bol: true})));
-
 								}} >
 								{!isLoginMode ? " Login" : " Sign Up"}
 							</button>

@@ -52,4 +52,7 @@
     * npm install --prefix frontend
 ## For using automatic useMemo and useCallback in React components
     * npm install babel-plugin-react-compiler@latest
+## For instaling bcrypt 
+    * npm install bcrypt 
+    * npm install -D @types/bcrypt 
 
