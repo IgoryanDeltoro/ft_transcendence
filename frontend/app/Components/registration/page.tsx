@@ -1,8 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation";
-import { Fanwood_Text, Island_Moments } from "next/font/google";
-import { error } from "console";
 
 let data = {
 	 struct: [
@@ -49,7 +47,7 @@ function Registration() {
 	useEffect(() => {
 		if (isLoginMode && labelFocus.length === 4)
 		{
-			setLabelFocus([...labelFocus.slice(0, -1)])
+			setLabelFocus(labelFocus.slice(0,-1));
 		}
 		else if (!isLoginMode && labelFocus.length < 4)
 		{
@@ -78,17 +76,10 @@ return (
 			<form onSubmit={ async (e) => { 
 				e.preventDefault();
 				const form = e.currentTarget;
-				if (!isLoginMode && form.password != form.confirmPassword)
+				
+				if (!isLoginMode && form.Password.value != form.ConfirmPassword.value)
 				{
 					alert("Passwords do not match");
-					setLabelFocus((prev) => (
-						prev.map((item) => {
-							if (item.type === "password")
-								return {...item, value: ""}
-							else
-								return item
-						})
-					));
 					return ;
 				}
 				await fetch(isLoginMode ? "http://localhost:4000/user/login" : "http://localhost:4000/user/register", {
@@ -97,18 +88,26 @@ return (
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify(isLoginMode ? {
-						email: form.email.value,
-						password: form.password.value
+						email: form.Email.value,
+						password: form.Password.value
 					} : {
-						email: form.email.value,
-						password: form.password.value,
-						name: form.text.value,
+						email: form.Email.value,
+						password: form.Password.value,
+						name: form.Username.value,
 						role: "PLAYER"
 					})
 				})
-				.then((res) => console.log(res))
-				.catch((error) => console.log(error))
-
+				.then((res) => {
+					if (res.ok)
+					{
+						setLabelFocus((prev) => prev.map((item) => ({...item, value: "", bol: true})));
+						setIsLoginMod(true);
+					}
+					else
+						alert("");
+				})
+				
+				
 			}}>
 				{labelFocus.map((item, i) => {
 					if (isLoginMode && i === 0)
@@ -116,9 +115,9 @@ return (
 					return (
 						<div className={data.fromStyles.inputDiv} key={i}>
 							
-							<label htmlFor={item.name} className="cursor-pointer">
+							<label htmlFor={String(i)} className="cursor-pointer">
 								<input required placeholder={item.bol ? item.name : ""}
-									type={item.type} name={item.type} id={String(i)} value={item.value} className={data.fromStyles.inputs}
+									type={item.type} name={item.name} id={String(i)} value={item.value} className={data.fromStyles.inputs}
 									onFocus={(e) => { setLabelFocus((prev) => prev.map((item, i) => i === Number(e.target.id) ? {...item, bol: false} : item)); }}
 									onChange={(e) => { setLabelFocus((prev) => prev.map((item, i) => i ===  Number(e.target.id) ? {...item, value: e.target.value} : item)); }}
 									onBlur={(e) => { setLabelFocus((prev) => prev.map((item, i) => i ===  Number(e.target.id) ? {...item, bol: true} : item)); }}
