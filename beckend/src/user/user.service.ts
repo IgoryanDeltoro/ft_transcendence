@@ -36,7 +36,7 @@ async findAll(role?: 'ADMIN' | 'PLAYER') {
 	{
 		return this.databaseService.user.findMany( {
 			where: {
-				role: role,
+				role,
 			}
 		});
 	}

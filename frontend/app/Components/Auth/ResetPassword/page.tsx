@@ -88,11 +88,11 @@ return (
 				</div>
 			</form>
 			<div className="text-center text-2xl ">
-				<button type="button" className="cursor-pointer transition-transform duration-300 hover:scale-110" onClick={(e) => rout.push("/Components/Auth/Login")}>
+				<button type="button" className="hover:border-b hover:border-blue-600 transform-y cursor-pointer transition-transform duration-300 hover:scale-110" onClick={(e) => rout.push("/Components/Auth/Login")}>
 					Login 
 				</button>
 				<span className="text-2xl mr-2 ml-2"> / </span>
-				<button type="button" className="cursor-pointer transition-transform duration-300 hover:scale-110" onClick={(e) => rout.push("/Components/Auth/Registr")}>
+				<button type="button" className="hover:border-b hover:border-blue-600 transform-y cursor-pointer transition-transform duration-300 hover:scale-110" onClick={(e) => rout.push("/Components/Auth/Registr")}>
 					Sign Up
 				</button>
 			</div>
