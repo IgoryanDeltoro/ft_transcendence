@@ -18,7 +18,8 @@ async create(body: Prisma.UserCreateInput) {
 	return this.databaseService.user.create({ data: newUser });
 }
 
-async login(body: {email: string, password: string}) {
+// {email: string, password: string}
+async login(body: Prisma.UserCreateInput) {
 	const user = await this.databaseService.user.findUnique({
 		where: {email: body.email}
 	})

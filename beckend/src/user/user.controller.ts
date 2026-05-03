@@ -12,7 +12,7 @@ export class UserController {
   }
 
   @Post('login')
-  login(@Body() body: {email: string, password: string}) {
+  login(@Body() body: Prisma.UserCreateInput) { // body: {email: string, password: string}
     return this.userService.login(body);
   }
 
