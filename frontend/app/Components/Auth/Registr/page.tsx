@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Data from "../Data";
 
 function Registration() {
@@ -12,15 +12,10 @@ return (
 
 	<div  className="bg w-full h-screen flex min-w-md items-center justify-center" >
 
-		<div className="fixed top-10 left-0.5">
+		<div className="fixed top-10 left-2">
 			<div className="">
 				<button className="cursor-pointer" type="button" onClick={(e) => rout.push("/")}>
-					<img src="/png/home.png" alt="home" className="w-16  transition-transform duration-300 hover:scale-105"/>
-				</button>
-			</div>
-			<div className="">
-				<button className="cursor-pointer" type="button" onClick={(e) => rout.push("/")}>
-					<img src="/png/iconSettings.png" alt="home"  className="w-15  transition-transform duration-300 hover:scale-105"/>
+						<img src="/png/home.png" alt="home" className="w-16  transition-transform duration-300 hover:scale-105"/>
 				</button>
 			</div>
 		</div>
@@ -54,7 +49,7 @@ return (
 				})
 				.then((res) => {
 					if (res.ok)
-						return rout.push('/Components/login');
+						return rout.push('/Components/Auth/Login');
 				})
 			}}>
 				{labelFocus.map((item, i) => {
@@ -72,14 +67,16 @@ return (
 							<div className={Data.formStyle.imgDiv}>
 								<img src={`${item.src}`} alt="icon" id={item.id} className="w-15  min-w-8 cursor-pointer"
 									onClick={(e) => {
+										const target = e.currentTarget;
 										setLabelFocus((prev) => (
 											prev.map((item) => {
-												if (item.id === e.currentTarget.id && (item.name === "Password" || item.name === "ConfirmPassword"))
+
+												if (item.id === target.id && (item.name === "Password" || item.name === "ConfirmPassword"))
 												{
 													if (item.type === "text")
-														return {...item, type: "password", src: "/png/iconSecret.png"}
+														return {...item, type: "password", src: "/png/secret.png"}
 													else
-														return {...item, type: "text", src: "/png/iconEye.png"}
+														return {...item, type: "text", src: "/png/eye.png"}
 												}
 												else
 													return item;
@@ -103,7 +100,7 @@ return (
 							Already have an account ? /
 							<button  className={Data.formStyle.btn_sin_log}
 								type="button" onClick={() => {
-									rout.push("/Components/login");
+									rout.push("/Components/Auth/Login");
 								}} >
 								 Login
 							</button>

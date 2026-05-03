@@ -1,5 +1,5 @@
 
-export default function ResetLayout({
+export default function RegistrLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
